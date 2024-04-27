@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Items</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('C:\\Users\\adity\\Desktop\\Add cart.gif');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  h1 {
+    text-align: center;
+    color: red;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+<h1>Add Items</h1>
+<form id="addItemForm">
+  <label for="itemName">Item Name:</label>
+  <input type="text" id="itemName" required><br>
+  
+  <label for="itemSerialNumber">Serial Number:</label>
+  <input type="text" id="itemSerialNumber" required><br>
+  
+  <label for="itemQuantity">Quantity:</label>
+  <input type="number" id="itemQuantity" required><br>
+  
+  <label for="itemPrice">Price:</label>
+  <input type="number" id="itemPrice" required><br> <!-- Added price field -->
+
+  <button type="button" id="addItemBtn">Add Item</button>
+</form>
+
+<a href="stock_left.html">Stock Left</a>
+
+<table id="itemTable" style="display: none;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Serial Number</th>
+      <th>Quantity</th>
+      <th>Price</th> <!-- Added price column -->
+    </tr>
+  </thead>
+  <tbody id="itemTableBody">
+    <!-- Table body will be dynamically populated -->
+  </tbody>
+</table>
+
+<script>
+document.getElementById("addItemBtn").addEventListener("click", function() {
+  const itemName = document.getElementById("itemName").value;
+  const itemSerialNumber = document.getElementById("itemSerialNumber").value;
+  const itemQuantity = document.getElementById("itemQuantity").value;
+  const itemPrice = document.getElementById("itemPrice").value; // Added price field
+  
+  if (itemName && itemSerialNumber && itemQuantity && itemPrice) {
+    // Add item to the table
+    addItemToTable(itemName, itemSerialNumber, itemQuantity, itemPrice); // Updated to include price
+
+    // Save item to localStorage
+    saveItemToLocalStorage(itemName, itemSerialNumber, itemQuantity, itemPrice); // Updated to include price
+
+    // Clear form fields
+    document.getElementById("addItemForm").reset();
+  } else {
+    alert("Please fill in all fields.");
+  }
+});
+
+function addItemToTable(name, serialNumber, quantity, price) { // Updated to include price
+  const tableBody = document.getElementById("itemTableBody");
+  const newRow = tableBody.insertRow();
+
+  const nameCell = newRow.insertCell(0);
+  nameCell.textContent = name;
+
+  const serialNumberCell = newRow.insertCell(1);
+  serialNumberCell.textContent = serialNumber;
+
+  const quantityCell = newRow.insertCell(2);
+  quantityCell.textContent = quantity;
+
+  const priceCell = newRow.insertCell(3); // Added price column
+  priceCell.textContent = price; // Added price value
+}
+
+function saveItemToLocalStorage(name, serialNumber, quantity, price) { // Updated to include price
+  // Retrieve existing items from localStorage
+  let items = JSON.parse(localStorage.getItem("items")) || [];
+
+  // Add the new item
+  items.push({ name: name, serialNumber: serialNumber, quantity: quantity, price: price }); // Updated to include price
+
+  // Save the updated items back to localStorage
+  localStorage.setItem("items", JSON.stringify(items));
+}
+</script>
+</body>
+</html>

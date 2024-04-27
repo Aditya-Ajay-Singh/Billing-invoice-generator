@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paymentor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('C:\\Users\\adity\\Desktop\\money.gif');
+            background-size: cover;
+            background-position: center;
+        }
+
+        #container {
+            border: 2px solid #000;
+            width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Add a semi-transparent white background */
+        }
+
+        #qr-code-container {
+            display: none;
+            /* Initially hide QR code container */
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #qr-code {
+            /* You can adjust the width and height as needed */
+            width: 200px;
+            height: 200px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+        }
+
+        input[type="text"],
+        select {
+            width: 200px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Paymentor</h1>
+        <label for="amount">Enter Amount:</label>
+        <input type="text" id="amount" placeholder="Enter amount..."><br><br>
+        <label for="paymentMethod">Select Payment Method:</label>
+        <select id="paymentMethod" onchange="togglePaymentFields()">
+            <option value="card">Credit/Debit Card</option>
+            <option value="upi">UPI (Unified Payments Interface)</option>
+            <option value="cash">Cash</option>
+        </select><br><br>
+        <div id="cardFields" style="display:none;">
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" placeholder="Enter card number..." pattern="[0-9]*" inputmode="numeric" maxlength="16" title="Only numeric characters allowed" required><br><br>
+            <label for="expiry">Expiry Date:</label>
+            <input type="text" id="expiry" placeholder="MM/YYYY" pattern="[0-9]*" inputmode="numeric" title="Only numeric characters allowed" maxlength="7" required><br><br>
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" placeholder="Enter CVV..." pattern="[0-9]*" inputmode="numeric" title="Only numeric characters allowed" maxlength="4" required><br><br>
+        </div>
+        <div id="cashMessage" style="display:none;">
+            <p>Please pay the amount on the counter.</p>
+        </div>
+        <button onclick="processPayment()">Continue</button>
+        <button onclick="printBill()">Print Bill</button>
+        <div id="qr-code-container">
+            <h2>Scan QR Code to Pay</h2>
+            <div id="qr-code"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script>
+        function togglePaymentFields() {
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            var cardFields = document.getElementById('cardFields');
+            var cashMessage = document.getElementById('cashMessage');
+            var qrCodeContainer = document.getElementById('qr-code-container');
+
+            if (paymentMethod === 'card') {
+                cardFields.style.display = 'block';
+                cashMessage.style.display = 'none';
+                qrCodeContainer.style.display = 'none';
+            } else if (paymentMethod === 'upi') {
+                cardFields.style.display = 'none';
+                cashMessage.style.display = 'none';
+                qrCodeContainer.style.display = 'none';
+            } else if (paymentMethod === 'cash') {
+                cardFields.style.display = 'none';
+                cashMessage.style.display = 'block';
+                qrCodeContainer.style.display = 'none';
+            }
+        }
+
+        function processPayment() {
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            var amount = document.getElementById('amount').value;
+
+            if (paymentMethod === 'card') {
+                var confirmCard = confirm("Are you sure you want to continue with card payment?");
+                if (confirmCard) {
+                    // Here you would typically submit card details to a payment processor
+                    alert("Card payment processing would occur here.");
+                } else {
+                    return; // User canceled card payment
+                }
+            } else if (paymentMethod === 'upi') {
+                generateQR(amount);
+            } else if (paymentMethod === 'cash') {
+                // For cash payment, no further action is needed
+            }
+        }
+
+        function generateQR(amount) {
+            var upiID = '7977072280@apl'; // UPI ID to receive payments
+
+            var qrText = `upi://pay?pa=${encodeURIComponent(upiID)}&pn=Recipient&mc=&tid=&tr=&tn=&am=${encodeURIComponent(amount)}&cu=INR`;
+            var qrCodeDiv = document.getElementById('qr-code');
+            qrCodeDiv.innerHTML = '';
+
+            var qr = new QRCode(qrCodeDiv, {
+                text: qrText,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Display QR code container
+            document.getElementById('qr-code-container').style.display = 'flex';
+        }
+
+        function printBill() {
+            window.location.href = "C:\\Users\\adity\\Desktop\\remake.html";
+        }
+
+        window.onload = function () {
+            // Retrieve URL parameters
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+
+            // Get the amount value from the URL parameter
+            const amount = urlParams.get('amount');
+
+            // Display the received amount in the "Enter Amount" field
+            document.getElementById('amount').value = amount;
+        };
+    </script>
+</body>
+
+</html>

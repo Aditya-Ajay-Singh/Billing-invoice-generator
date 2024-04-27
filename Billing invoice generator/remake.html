@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Invoice Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('C:\\Users\\adity\\Desktop\\backgroundmall.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            flex-direction: row;
+        }
+
+        #dashboard {
+            background-color: red; /* Changed background color to red */
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin-right: 20px;
+        }
+
+        #dashboard h2 {
+            text-align: center;
+            color: blue;
+            margin-bottom: 20px;
+        }
+
+        #dashboard ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #dashboard li {
+            padding: 10px 0;
+        }
+
+        #invoiceForm {
+            background-color: red; /* Change background color to red */
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        #invoiceReceiptGif {
+            width: 400px; /* Extend the width of the GIF */
+            margin-left: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        h1 {
+            text-align: center;
+            color: red; /* Set text color to red */
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><button id="addItemBtn">Add Items</button></li>
+            <li><button id="stockLeftBtn">Stock Left</button></li>
+            <li><button id="historyBtn">History</button></li>
+            <li><button id="helpBtn">Help and Support</button></li>
+        </ul>
+    </div>
+
+    <div>
+        <h1>Billing Invoice Generator</h1> <!-- Red text color applied here -->
+        <form id="invoiceForm">
+            <label for="customerPhone">Customer Phone Number:</label>
+            <input type="text" id="customerPhone" maxlength="10" required><br>
+
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" required><br>
+
+            <label for="invoiceNumber">Invoice Number:</label>
+            <input type="text" id="invoiceNumber" required><br>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" required><br>
+
+            <label for="gstNumber">GST Number:</label>
+            <input type="text" id="gstNumber" maxlength="15" required><br>
+
+            <button type="button" id="paymentBtn">Payment</button>
+            <button type="button" id="addProductBtn">Add Product</button>
+            <button type="button" id="generateInvoiceBtn">Generate Invoice</button>
+        </form>
+    </div>
+
+    <img id="invoiceReceiptGif" src="C:\\Users\\adity\\Desktop\\invoice_receipt_animation.gif" alt="Invoice Receipt GIF">
+
+    <script>
+        document.getElementById("addItemBtn").addEventListener("click", function () {
+            // Open "add_items.html" when the button is clicked
+            window.location.href = "file:///C:/Users/adity/Desktop/add_items.html";
+        });
+
+        document.getElementById("stockLeftBtn").addEventListener("click", function () {
+            // Open "stock_left.html" when the button is clicked
+            window.location.href = "file:///C:/Users/adity/Desktop/stock_left.html";
+        });
+
+        document.getElementById("historyBtn").addEventListener("click", function () {
+            // Open the "Bills" directory
+            window.location.href = "file:///C:/Users/adity/Desktop/Bills";
+        });
+
+        document.getElementById("helpBtn").addEventListener("click", function () {
+            // Open the "Help and Support" page
+            window.location.href = "file:///C:/Users/adity/Desktop/help%20and%20support.html";
+        });
+
+        document.getElementById("addProductBtn").addEventListener("click", function () {
+            // Open "stock_left.html" to pick products
+            window.location.href = "file:///C:/Users/adity/Desktop/stock_left.html";
+        });
+
+        document.getElementById("paymentBtn").addEventListener("click", function () {
+            // Retrieve details from the form
+            const customerPhone = document.getElementById("customerPhone").value;
+            const customerName = document.getElementById("customerName").value;
+            const invoiceNumber = document.getElementById("invoiceNumber").value;
+            const amount = document.getElementById("amount").value;
+            const gstNumber = document.getElementById("gstNumber").value;
+
+            // Redirect to "mix 2.0.html" page with details as URL parameters
+            const url = `file:///C:/Users/adity/Desktop/mix%202.0.html?customerPhone=${customerPhone}&customerName=${customerName}&invoiceNumber=${invoiceNumber}&amount=${amount}&gstNumber=${gstNumber}`;
+            window.location.href = url;
+        });
+
+        document.getElementById("generateInvoiceBtn").addEventListener("click", function () {
+            // Retrieve details from the form
+            const customerPhone = document.getElementById("customerPhone").value;
+            const customerName = document.getElementById("customerName").value;
+            const invoiceNumber = document.getElementById("invoiceNumber").value;
+            const amount = document.getElementById("amount").value;
+            const gstNumber = document.getElementById("gstNumber").value;
+
+            // Redirect to display page with details as URL parameters
+            const url = `file:///C:/Users/adity/Desktop/display.html?customerPhone=${customerPhone}&customerName=${customerName}&invoiceNumber=${invoiceNumber}&amount=${amount}&gstNumber=${gstNumber}`;
+            window.location.href = url;
+        });
+    </script>
+</body>
+
+</html>

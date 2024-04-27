@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Left</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('C:\\Users\\adity\\Desktop\\ima.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: red; /* Set font color to red */
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  .delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .delete-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  .redirect-btn, .save-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: inline-block;
+  }
+
+  .redirect-btn:hover, .save-btn:hover {
+    background-color: #0b7dda;
+  }
+</style>
+</head>
+<body>
+<h1>Stock Left</h1>
+
+<table id="itemTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Serial Number</th>
+      <th>Price</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody id="itemTableBody">
+    <!-- Table body will be dynamically populated -->
+  </tbody>
+</table>
+
+<!-- Table for manually entering product details -->
+<table id="manualProductTable" style="margin-top: 20px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Serial Number</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="manualProductTableBody">
+    <!-- Initial rows -->
+    <tr>
+      <td><input type="text" name="manualName"></td>
+      <td><input type="text" name="manualSerialNumber" oninput="populateDetails(this)"></td>
+      <td><input type="number" name="manualPrice" min="0"></td>
+      <td><input type="number" name="manualQuantity" min="1" max="100" oninput="calculateTotal(this)"></td>
+      <td><input type="number" name="manualTotal" readonly></td>
+      <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    </tr>
+     <tr>
+      <td><input type="text" name="manualName"></td>
+      <td><input type="text" name="manualSerialNumber" oninput="populateDetails(this)"></td>
+      <td><input type="number" name="manualPrice" min="0"></td>
+      <td><input type="number" name="manualQuantity" min="1" max="100" oninput="calculateTotal(this)"></td>
+      <td><input type="number" name="manualTotal" readonly></td>
+      <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    </tr>
+ <tr>
+      <td><input type="text" name="manualName"></td>
+      <td><input type="text" name="manualSerialNumber" oninput="populateDetails(this)"></td>
+      <td><input type="number" name="manualPrice" min="0"></td>
+      <td><input type="number" name="manualQuantity" min="1" max="100" oninput="calculateTotal(this)"></td>
+      <td><input type="number" name="manualTotal" readonly></td>
+      <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    </tr>
+ <tr>
+      <td><input type="text" name="manualName"></td>
+      <td><input type="text" name="manualSerialNumber" oninput="populateDetails(this)"></td>
+      <td><input type="number" name="manualPrice" min="0"></td>
+      <td><input type="number" name="manualQuantity" min="1" max="100" oninput="calculateTotal(this)"></td>
+      <td><input type="number" name="manualTotal" readonly></td>
+      <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    </tr>
+ <tr>
+      <td><input type="text" name="manualName"></td>
+      <td><input type="text" name="manualSerialNumber" oninput="populateDetails(this)"></td>
+      <td><input type="number" name="manualPrice" min="0"></td>
+      <td><input type="number" name="manualQuantity" min="1" max="100" oninput="calculateTotal(this)"></td>
+      <td><input type="number" name="manualTotal" readonly></td>
+      <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+  <strong>Total:</strong> <span id="totalAmount"></span>
+</div>
+
+<button type="button" class="redirect-btn" onclick="redirectToRemake()">Go to Remake.html</button>
+<button type="button" class="save-btn" onclick="saveData()">Save Data</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Populate the table with existing items from localStorage on page load
+  loadItemsFromLocalStorage();
+});
+
+function loadItemsFromLocalStorage() {
+  // Retrieve items from localStorage
+  const items = JSON.parse(localStorage.getItem("items")) || [];
+
+  // Populate the table with items
+  const tableBody = document.getElementById("itemTableBody");
+  items.forEach(item => {
+    const newRow = tableBody.insertRow();
+    newRow.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.serialNumber}</td>
+      <td>${item.price}</td>
+      <td>${item.quantity}</td>
+    `;
+  });
+
+  // Calculate and display the total amount
+  updateTotal();
+}
+
+// Function to populate name and price based on serial number input
+function populateDetails(input) {
+  const serialNumber = input.value;
+  const items = JSON.parse(localStorage.getItem("items")) || [];
+
+  // Find the item with the matching serial number
+  const selectedItem = items.find(item => item.serialNumber === serialNumber);
+
+  if (selectedItem) {
+    // Populate the name and price input fields
+    const row = input.parentNode.parentNode;
+    row.querySelector('input[name="manualName"]').value = selectedItem.name;
+    row.querySelector('input[name="manualPrice"]').value = selectedItem.price;
+    // Auto-calculate and update total
+    calculateTotal(row.querySelector('input[name="manualQuantity"]'));
+  } else {
+    // Clear the name and price input fields if no matching item is found
+    const row = input.parentNode.parentNode;
+    row.querySelector('input[name="manualName"]').value = '';
+    row.querySelector('input[name="manualPrice"]').value = '';
+    row.querySelector('input[name="manualTotal"]').value = '';
+    // Update the total amount
+    updateTotal();
+  }
+}
+
+// Function to calculate total based on quantity and price
+function calculateTotal(input) {
+  const row = input.parentNode.parentNode;
+  const price = parseFloat(row.cells[2].querySelector("input").value);
+  let quantity = parseInt(input.value);
+  
+  // Check if quantity exceeds 100
+  if (quantity > 100) {
+    // If it exceeds, set quantity to 100
+    input.value = 100;
+    quantity = 100;
+  }
+  
+  const total = isNaN(price) || isNaN(quantity) ? "" : (price * quantity);
+  row.cells[4].querySelector("input").value = total;
+
+  // Update the total amount
+  updateTotal();
+}
+
+// Function to update the total amount
+function updateTotal() {
+  const rows = document.getElementById("manualProductTable").querySelectorAll("tbody tr");
+  let totalAmount = 0;
+  rows.forEach(row => {
+    const totalInput = row.querySelector('input[name="manualTotal"]');
+    if (!isNaN(totalInput.value) && totalInput.value >= 0) {
+      totalAmount += parseFloat(totalInput.value);
+    }
+  });
+  document.getElementById("totalAmount").textContent = totalAmount;
+}
+
+// Function to delete row
+function deleteRow(btn) {
+  const row = btn.parentNode.parentNode;
+  row.parentNode.removeChild(row);
+
+  // Update the total amount after deleting row
+  updateTotal();
+}
+
+// Function to redirect to Remake.html
+function redirectToRemake() {
+  const totalAmount = document.getElementById("totalAmount").textContent;
+  const url = `file:///C:/Users/adity/Desktop/remake.html?amount=${totalAmount}`;
+  window.location.href = url;
+}
+
+// Function to save data
+function saveData() {
+  // Retrieve the last 5 rows of data
+  const rows = document.getElementById("manualProductTable").querySelectorAll("tbody tr");
+  const lastFiveRows = Array.from(rows).slice(-5).map(row => {
+    return {
+      name: row.querySelector('input[name="manualName"]').value,
+      serialNumber: row.querySelector('input[name="manualSerialNumber"]').value,
+      price: parseFloat(row.querySelector('input[name="manualPrice"]').value),
+      quantity: parseInt(row.querySelector('input[name="manualQuantity"]').value),
+      total: parseFloat(row.querySelector('input[name="manualTotal"]').value)
+    };
+  });
+
+  // Store the last 5 rows of data in localStorage
+  localStorage.setItem("lastFiveRows", JSON.stringify(lastFiveRows));
+
+  // Update the total amount
+  updateTotal();
+
+  // Redirect to display.html
+  window.location.href = "display.html";
+}
+</script>
+</body>
+</html>

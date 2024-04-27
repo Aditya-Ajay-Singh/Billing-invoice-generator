@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Display Data</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('C:/Users/adity/Desktop/bill_back.png');
+    background-size: cover; /* Ensure the image covers the entire background */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+  }
+
+  h1 {
+    text-align: center;
+    color: red;
+    text-decoration: underline;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  .total-row td {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  /* Style for input fields */
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background-color: transparent;
+    outline: none;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    border-bottom: 2px solid #ff0000; /* Change color on focus */
+  }
+
+  /* Style for print button */
+  #printButton {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  #printButton:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+<h1>BILL</h1>
+
+<div style="margin-top: 20px;">
+  <label for="customerPhone">Customer Phone No:</label>
+  <input type="text" id="customerPhone" name="customerPhone">
+</div>
+<div style="margin-top: 10px;">
+  <label for="customerName">Customer Name:</label>
+  <input type="text" id="customerName" name="customerName">
+</div>
+<div style="margin-top: 10px;">
+  <label for="invoiceNo">Invoice No:</label>
+  <input type="text" id="invoiceNo" name="invoiceNo">
+</div>
+<div style="margin-top: 10px;">
+  <label for="amount">Amount:</label>
+  <input type="text" id="amount" name="amount">
+</div>
+<div style="margin-top: 10px;">
+  <label for="gstNumber">GST Number:</label>
+  <input type="text" id="gstNumber" name="gstNumber">
+</div>
+
+<table id="displayTable" style="margin-top: 20px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Serial Number</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody id="displayTableBody">
+    <!-- Data will be displayed here -->
+  </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+  <strong>Total:</strong> <span id="totalAmount"></span>
+</div>
+
+<button id="printButton" onclick="printBill()">Print Bill</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Load data from localStorage
+  loadDataFromLocalStorage();
+  
+  // Retrieve customer details from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  document.getElementById("customerPhone").value = urlParams.get('customerPhone') || '';
+  document.getElementById("customerName").value = urlParams.get('customerName') || '';
+  document.getElementById("invoiceNo").value = urlParams.get('invoiceNumber') || '';
+  document.getElementById("amount").value = urlParams.get('amount') || '';
+  document.getElementById("gstNumber").value = urlParams.get('gstNumber') || '';
+});
+
+function loadDataFromLocalStorage() {
+  // Retrieve the last 5 rows of data from localStorage
+  const lastFiveRows = JSON.parse(localStorage.getItem("lastFiveRows")) || [];
+
+  // Display data in the table
+  const tableBody = document.getElementById("displayTableBody");
+  let totalAmount = 0;
+  lastFiveRows.forEach(row => {
+    const newRow = tableBody.insertRow();
+    newRow.innerHTML = `
+      <td>${row.name}</td>
+      <td>${row.serialNumber}</td>
+      <td>${row.price}</td>
+      <td>${row.quantity}</td>
+      <td>${row.total}</td>
+    `;
+    // Add total to calculate total amount
+    totalAmount += parseFloat(row.total);
+  });
+
+  // Display the total amount
+  document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+}
+
+function printBill() {
+  window.print(); // Open print dialog
+}
+</script>
+</body>
+</html>
